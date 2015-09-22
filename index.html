@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    #main {
+      height: 895px;
+    }
+
+    hr {
+      color: black;
+    }
+
+    #leftBody {
+      overflow-y: scroll;
+      height: 90%;
+      position: relative;
+      padding-top: 10%;
+      bottom: 0;
+      background-color: #274666;
+    }
+
+    #leftColumn {
+      border-radius: 3px;
+      opacity: 1;
+      width: 15%;
+      height: 895px;
+      float: left;
+      color: white
+    }
+
+    #middleColumn {}
+
+    #map {
+      width: 60%;
+      height: 895px;
+      float: left;
+    }
+
+    #rightColumn {
+      padding-left: 1%;
+      background-color: #274666;
+      border-radius: 3px;
+      color: white;
+      width: 24%;
+      height: 895px;
+      float: right;
+    }
+
+    #text {
+      width: 35%;
+      float: left;
+    }
+
+    #fields {
+      width: 65%;
+      float: right;
+    }
+
+    #inputAdd {
+      width: 90%;
+    }
+
+    input {
+      border-radius: 3px;
+    }
+
+    #bottom {
+      background-color: black;
+      width: 100%;
+      height: 20%;
+    }
+
+    #innerLeft {
+      float: left;
+    }
+
+    #innerRight {
+      float: right;
+    }
+
+    input#reset {
+      font-size: 8px
+    }
+
+    #leftHeader {
+      text-align: center;
+      height: 5%;
+      border-bottom: 3px solid black;
+      background-color: gray;
+    }
+
+    .labels {
+      color: #0000ff;
+      font-size: 20px;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      -webkit-animation-name: example;
+      /* Chrome, Safari, Opera */
+      -webkit-animation-duration: 4s;
+      /* Chrome, Safari, Opera */
+      animation-name: example;
+      animation-duration: 4s;
+      animation-iteration-count: 100;
+    }
+    /* Chrome, Safari, Opera */
+
+    @-webkit-keyframes example {
+      0% {
+        color: red;
+      }
+      25% {
+        color: yellow;
+      }
+      50% {
+        color: blue;
+      }
+      100% {
+        color: green;
+      }
+    }
+    /* Standard syntax */
+
+    @keyframes example {
+      0% {
+        color: red;
+      }
+      25% {
+        color: yellow;
+      }
+      50% {
+        color: blue;
+      }
+      100% {
+        color: green;
+      }
+    }
+
+    #labelEdit {
+      border: 1px solid black;
+    }
+
+    #panel {
+      position: absolute;
+      top: 10px;
+      left: 25%;
+      z-index: 5;
+      text-align: center;
+    }
+
+    #buttonDiv {
+      float: left;
+    }
+
+    #groupLabelDiv,
+    #heatLabel {
+      margin-top: 1.5%;
+      font-size: 15px;
+      float: left;
+    }
+
+    #heatLabel {
+      margin-top: 1.5%;
+      font-size: 15px;
+    }
+
+    #groupId {
+      background-color: gray;
+      opacity: .7;
+      width: 15%;
+    }
+
+    #yArea {}
+
+    #xCord {}
+
+    #yCord {}
+  </style>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places,visualization&sensor=false"></script>
+
+  <script src="markerwithlabel.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    var heatmapData = [];
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.261),
+    // new google.maps.LatLng(34.0466409, -118.262),
+    // new google.maps.LatLng(34.0466409, -118.263),
+    // new google.maps.LatLng(34.0466409, -118.264),
+    // new google.maps.LatLng(34.0466409, -118.265),
+    // new google.maps.LatLng(34.0466409, -118.266),
+    // new google.maps.LatLng(34.0466409, -118.267),
+    // new google.maps.LatLng(34.0466409, -118.2638),
+    // new google.maps.LatLng(34.0466409, -118.2639),
+    // new google.maps.LatLng(34.0466409, -118.2631),
+    // new google.maps.LatLng(34.0466409, -118.2632),
+    // new google.maps.LatLng(34.0466409, -118.2633),
+    // new google.maps.LatLng(34.0466409, -118.2634),
+    // new google.maps.LatLng(34.0466409, -118.2635),
+    // new google.maps.LatLng(34.0466409, -118.2636),
+    // new google.maps.LatLng(34.0466409, -118.2637),
+    // new google.maps.LatLng(34.0466409, -118.263),
+    // new google.maps.LatLng(34.0466409, -118.264),
+    // new google.maps.LatLng(34.0466409, -118.265),
+    // new google.maps.LatLng(34.0466409, -118.266),
+    // new google.maps.LatLng(34.0466409, -118.267),
+    // new google.maps.LatLng(34.0466409, -118.268),
+    // new google.maps.LatLng(34.0466409, -118.269),
+    // new google.maps.LatLng(34.0466409, -118.2610),
+    // new google.maps.LatLng(34.0466409, -118.2611),
+    // new google.maps.LatLng(34.0466409, -118.2612),
+    // new google.maps.LatLng(34.0466409, -118.2613),
+    // new google.maps.LatLng(34.0466409, -118.2614),
+
+
+
+    function myCenter(position, id, label, groupId) {
+      this.position = position;
+      this.id = id;
+      this.label = label;
+      this.groupId = groupId;
+    }
+    var myCenters = [];
+
+    var map, logString = "",
+      marker, lastLocCount = 0,
+      mapOptions, that, draglistner, heatmap;
+    var geocoder = new google.maps.Geocoder();
+    myCenters[lastLocCount] = new myCenter(new google.maps.LatLng(34.0466409, -118.2624171), lastLocCount, "AXS", 0);
+    lastLocCount++;
+
+    function initialize() {
+
+      var mapCanvas = document.getElementById('map');
+      mapOptions = {
+        center: myCenters[0].position,
+        zoom: 15,
+        backgroundColor: "#274666",
+
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      map = new google.maps.Map(mapCanvas, mapOptions)
+
+      marking(map, myCenters[0].position);
+      var input = /** @type {!HTMLInputElement} */ (
+        document.getElementById('inputAdd'));
+      var autocomplete = new google.maps.places.Autocomplete(input);
+
+      autocomplete.addListener('place_changed', function() {
+
+        var place = autocomplete.getPlace();
+        //alert(place.geometry.location);
+
+      });
+      google.maps.event.addListener(map, "click", function(event) {
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        // populate yor box/field with lat, lng
+        myCenters[lastLocCount] = new myCenter(new google.maps.LatLng(lat, lng), lastLocCount, "Beacon" + lastLocCount, document.getElementById('groupId').value);
+        lastLocCount++;
+
+
+        marking(map, myCenters[myCenters.length - 1].position);
+
+
+      });
+      google.maps.event.addListener(map, "mousemove", function(event) {
+        map.setOptions({
+          draggableCursor: "url(image/icon" + document.getElementById('groupId').value + ".gif), auto"
+        });
+
+      });
+
+    }
+
+
+    function marking(map, position) {
+      //console.log(myCenters);
+
+
+      var startDragPosition;
+
+      var infowindow = new google.maps.InfoWindow();
+
+      var lastresult;
+      logString += "";
+
+      if (myCenters.length == 1) {
+        marker = new MarkerWithLabel({
+          position: position,
+          draggable: true,
+          raiseOnDrag: true,
+          map: map,
+          animation: google.maps.Animation.DROP,
+          zIndex: 10,
+          labelClass: 'labels',
+
+          //labelA nchor: new google.maps.Point(22, 0),
+        });
+        marker.set("id", "AXS");
+        //marker.set("icon", "image/axs_logo.png");
+      } else {
+
+        myCenters[lastLocCount - 1].label = "Beacon" + lastLocCount;
+        myCenters[lastLocCount - 1].id = lastLocCount;
+
+
+        marker = new MarkerWithLabel({
+          position: position,
+          draggable: true,
+          raiseOnDrag: true,
+          map: map,
+          animation: google.maps.Animation.DROP,
+          labelContent: myCenters[lastLocCount - 1].label,
+
+          labelClass: 'labels',
+          zIndex: 10
+            //labelA nchor: new google.maps.Point(22, 0),
+        });
+        marker.set("id", myCenters[myCenters.length - 1].id);
+
+        marker.set("icon", "image/icon" + myCenters[myCenters.length - 1].groupId + ".gif");
+
+
+      }
+
+      geocoder.geocode({
+        'location': myCenters[myCenters.length - 1].position
+      }, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          if (results[1]) {
+
+
+            logString += marker.get("labelContent") + " has been set to  " + results[1].formatted_address + "<hr>";
+            writingLogs(logString);
+
+          } else {
+            logString += marker.get("labelContent") + " has been set to unknown location <hr>";
+            writingLogs(logString);
+          }
+        } else {
+          logString += marker.get("labelContent") + " has been set to unknown location <hr>";
+          writingLogs(logString);
+        }
+      });
+      draglistner = google.maps.event.addListener(marker, 'dragend', function(evt) {
+        if (confirm("Are You Sure You Want To Move this marker NOW ??")) {
+          var latlng = {
+            lat: evt.latLng.lat(),
+            lng: evt.latLng.lng()
+          };
+          geocoder.geocode({
+            'location': latlng
+          }, function(results, status) {
+            lastresult = results;
+            if (status === google.maps.GeocoderStatus.OK) {
+              if (results[1]) {
+
+                logString += "New location of " + marker.get("labelContent") + " has been set to " + results[1].formatted_address + "<hr>";
+                writingLogs(logString);
+
+              } else {
+                logString += marker.get("labelContent") + " has been set to unknown location <hr>";
+                writingLogs(logString);
+              }
+            } else {
+              logString += marker.get("id") + " has been set to unknown location <hr>";
+              writingLogs(logString);
+            }
+          });
+        } else {
+          marker.setPosition(startDragPosition);
+          delete startDragPosition;
+          alert("Reset to previous location : " + lastresult[1].formatted_address);
+        }
+
+      });
+
+      marker.addListener('rightclick', function(evt) {
+        that = this;
+        var id = this.get("label");
+        var contentString = "";
+
+        if (this.get("id") != "AXS") {
+          contentString = '<div id="content" > Label: <input type="text" id="labelEdit" value="' + this.get("labelContent") + '"/><br/></div>'
+        } else {
+          contentString = '<div id="content" > Label: ' + this.get("labelContent") + '<br/></div>'
+        }
+        contentString += '<div>Id: ' + this.get("id") + '</div>';
+        contentString += '<div>X coordinate: ' + this.position.G + '<br/>Y coordinate: ' + this.position.K + '<br/></div>'
+
+        function abc(callback) {
+          geocoder.geocode({
+            'location': position
+          }, function(results, status) {
+            if (results[1]) {
+              callback(results[1].formatted_address, that);
+            } else {
+              callback("undefined", that);
+            }
+
+          });
+        }
+        abc(function(addr, that) {
+
+
+          //console.log(that+" "+that.id);
+
+          contentString += '<div>Location: ' + addr + '</div>';
+
+          contentString += '<br/><div><input type="button" onClick="updateLabel(that,id)" value="Update">';
+          contentString += '<input type="button" onClick="freeze(that,draglistner)" value="Freeze it"</div>';
+          contentString += '<input type="button" onClick="unfreeze(that,draglistner)" value="Un-Freeze it"</div>';
+          if (that.get("id") != "AXS") {
+            contentString += '<div style="color:red"><br/> Double click to this beacon</div>';
+          }
+          infowindow.setContent(contentString);
+          infowindow.open(map, that);
+
+        });
+
+
+      });
+
+
+      google.maps.event.addListener(marker, "dblclick", function(event) {
+        if (confirm("Are You Sure You Want To Delete this marker NOW ??")) {
+          var i;
+          if (this.get("id") == "AXS") {
+            alert("Home cannot be deleted");
+          } else {
+
+
+            for (i = 0; i < myCenters.length; i++) {
+              if ((myCenters[i].position.G == this.position.G) && (myCenters[i].position.K == this.position.K))
+                break;
+            }
+            myCenters.remove(i);
+
+            this.setMap(null);
+            infowindow.close();
+
+            logString += "Beacon " + i + " has been deleted <hr>";
+            writingLogs(logString);
+          }
+
+        }
+
+
+      });
+      google.maps.event.addListener(marker, 'drag', function(evt) {
+        startDragPosition = this.getPosition();
+
+        document.getElementById('xCord').value = this.getPosition().G;
+        document.getElementById('yCord').value = this.getPosition().K;
+
+      });
+
+      map.panTo(position);
+      // //map.setCenter(position); // set map center to marker position
+      //
+      // //smoothZoom(map, 10, 7); // call smoothZoom, parameters map, final zoomLevel, and starting zoom level
+
+    }
+
+
+    function addingLocByAdd() {
+      var address_string = document.getElementById('inputAdd').value;
+      geocoding(address_string);
+    }
+
+
+
+    function addingLoc() {
+
+      var lat = document.getElementById('xCord').value;
+      var lng = document.getElementById('yCord').value;
+      myCenters[lastLocCount] = new myCenter(new google.maps.LatLng(lat, lng), lastLocCount, "Beacon" + lastLocCount, document.getElementById('groupId').value);
+      lastLocCount++;
+
+      marking(map, myCenters[myCenters.length - 1].position);
+
+    }
+
+    function geocoding(address) {
+      geocoder.geocode({
+        address: address,
+        region: 'no'
+      }, function(results, status) {
+        if (status.toLowerCase() == 'ok') {
+          // Get center
+          var coords = new google.maps.LatLng(
+            results[0]['geometry']['location'].lat(),
+            results[0]['geometry']['location'].lng()
+          );
+          //alert(coords);
+          myCenters[lastLocCount] = new myCenter(coords, lastLocCount, "Beacon" + lastLocCount, document.getElementById('groupId').value);
+          lastLocCount++;
+
+          marking(map, myCenters[myCenters.length - 1].position);
+
+        } else {
+          alert("Wrong address\nTry Again!!");
+        }
+      });
+
+    }
+
+
+    function smoothZoom(map, max, cnt) {
+      if (cnt >= max) {
+        return;
+      } else {
+        z = google.maps.event.addListener(map, 'zoom_changed', function(event) {
+          google.maps.event.removeListener(z);
+          smoothZoom(map, max, cnt + 2);
+        });
+        setTimeout(function() {
+          map.setZoom(cnt)
+        }, 80); // 80ms is what I found to work well on my system -- it might not work well on all systems
+      }
+    }
+
+    function heatingTheMap() {
+      a
+      if (document.getElementById("headMapButton").checked) {
+
+
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data: heatmapData,
+          radius: 100
+        });
+        heatmap.setMap(map);
+      } else {
+        heatmap.setMap(null);
+      }
+    }
+    var userCount=0;
+
+    function userActivity(beaconId, buttonId) {
+      var i = 0;
+      if (buttonId == "+") {
+        for (i = 0; i < myCenters.length; i++) {
+          if (myCenters[i].id == beaconId) {
+            break;
+          }
+
+        }
+        if (i == myCenters.length) {
+          alert("Invalid Beacon ID");
+        } else {
+
+
+          heatmapData.push(myCenters[i].position);
+          //console.log(heatmapData);
+          heatingTheMap();
+        }
+
+
+      } else {
+        for (i = 0; i < myCenters.length; i++) {
+          if (myCenters[i].id == beaconId) {
+            break;
+          }
+
+        }
+        if (i == myCenters.length) {
+          alert("Invalid Beacon ID");
+        } else {
+        for (j = 0; j < heatmapData.length; j++) {
+          if (heatmapData[j] == myCenters[i].position) {
+            break;
+          }
+
+        }
+        heatmapData.remove(j);
+        //console.log(heatmapData);
+        heatingTheMap();
+      }
+
+        //alert("Leaving");
+      }
+
+    }
+
+    function freeze(myMarker) {
+      if (myMarker.get("draggable")) {
+        myMarker.setOptions({
+          draggable: false
+        });
+        alert("Beacon has been frozed");
+
+      } else {
+        alert("Marker is already frozen");
+      }
+
+
+    }
+
+    function unfreeze(myMarker) {
+      if (myMarker.get("draggable")) {
+        alert("Marker is already free to move");
+
+      } else {
+        myMarker.setOptions({
+          draggable: true
+        });
+        alert("Now Drag Beacon to update its location");
+      }
+
+
+    }
+
+    function updateLabel(marker, id) {
+      logString += marker.get("labelContent") + " has been renamed to ";
+      var i = 0;
+      for (i = 0; i < myCenters.length; i++) {
+        if (myCenters[i].id == marker.get("id")) {
+          break;
+        }
+
+      }
+      myCenters[i].label = document.getElementById('labelEdit').value;
+      //marker.set("id", document.getElementById('labelEdit').value);
+      marker.set("labelContent", document.getElementById('labelEdit').value);
+      logString += marker.get("labelContent") + "<hr>";
+      writingLogs(logString);
+
+    }
+
+
+    function clearMarkers() {
+
+      myCenters = [];
+      lastLocCount = 0;
+      myCenters[lastLocCount] = new myCenter(new google.maps.LatLng(34.0466409, -118.2624171), lastLocCount, "AXS", 0);
+      lastLocCount++;
+      initialize();
+      //console.log(myCenter);
+      logString += "All Beacons has been removed from the map<hr>";
+      writingLogs(logString);
+        heatmap.setMap(null);
+
+    }
+
+    function goToHome() {
+      map.panTo(myCenters[0].position);
+
+    }
+
+
+    function writingLogs(logs) {
+      document.getElementById('leftBody').innerHTML = logs;
+      scrollDown();
+
+    }
+
+
+    function deleteLogs() {
+      logString = "";
+      writingLogs(logString);
+    }
+
+    function scrollDown() {
+      var objDiv = document.getElementById("leftBody");
+
+      objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    Array.prototype.remove = function(from, to) {
+      var rest = this.slice((to || from) + 1 || this.length);
+      this.length = from < 0 ? this.length + from : from;
+      return this.push.apply(this, rest);
+    };
+
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+</head>
+
+<body onload="heatingTheMap();">
+  <div id="main">
+    <div id="leftColumn">
+      <div id="leftHeader">
+        <div id="innerLeft">
+          Activity Log
+        </div>
+        <div id="innerRight">
+          <input type="button" value="Reset" id="reset" onclick="deleteLogs()" />
+        </div>
+      </div>
+      <div id="leftBody">
+      </div>
+    </div>
+    <div id="middleColumn">
+      <div id="panel">
+        <div id="buttonDiv">
+          <input onclick="clearMarkers();" type=button value="Delete all Markers" />
+          <input onclick="goToHome();" type=button value="Go to home" />
+          <input onclick="heatingTheMap();" checked="true" id="headMapButton" type=checkbox />
+          <span id="heatLabel" style="float:right">Show Heat Map</span>
+        </div>
+        <div id="groupLabelDiv">
+          <span id="groupLabel">Group ID:</span>
+          <input id="groupId" type=number value="1" /></input>
+        </div>
+
+      </div>
+      <div id="map"></div>
+    </div>
+    <div id="rightColumn">
+      <div id="insideRight">
+        <div id="text">
+          <p id="paraAdd">
+            Address
+          </p>
+          <br/>
+
+          <p>
+            OR
+          </p>
+          <p>
+            X &deg;
+          </p>
+          <p>
+            Y &deg;
+          </p>
+          <br/>
+          <br/>
+
+
+
+
+          <p>
+            OR
+          </p>
+
+
+          <p>
+            Import
+          </p>
+          <br/>
+          <br/>
+
+          <br/>
+          <br/> User Activity
+
+        </div>
+        <div id="fields">
+          <p>
+            <input class="input-lg" type="text" id="inputAdd" onfocus="if(this.value != null) { this.value = ''; }" placeholder="Enter any Address" />
+          </p>
+          <p>
+            <input class="input-lg" type="submit" id="inputSubmit" value="Set location using address" onclick="addingLocByAdd()" />
+          </p>
+          <br/>
+          <p>
+            <input type="number" onfocus="if(this.value != null) { this.value = ''; }" id="xCord" />
+          </p>
+          <p>
+            <input type="number" onfocus="if(this.value != null) { this.value = ''; }" id="yCord" />
+          </p>
+          <p>
+            <input type="submit" id="inputSubmit" value="Set location using coordinates" onclick="addingLoc()" />
+          </p>
+          <br/>
+          <br/>
+
+          <p>
+            <input type="text" onfocus="if(this.value != null) { this.value = ''; }" id="APILink" />
+          </p>
+          <p>
+            <input type="button" id="a" value="Set location using API" />
+          </p>
+          <br/>
+          <br/>
+        </div>
+
+      </div>
+      <div>
+        <input type="number" id="beaconId" placeholder="Beacon Id" />
+        <input type="button" value="+" onclick="if(document.getElementById('beaconId').value==''){alert('Please provide Beacon Id');}else{userActivity(document.getElementById('beaconId').value,this.value);}" id="actionAdd" />
+        <input type="button" value="-" onclick="if(document.getElementById('beaconId').value==''){alert('Please provide Beacon Id');}else{userActivity(document.getElementById('beaconId').value,this.value);}" id="actionRemove" /> </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
